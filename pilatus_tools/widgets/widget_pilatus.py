@@ -15,16 +15,22 @@ from matplotlib.figure import Figure
 import matplotlib.patches as patches
 import time as ttime
 
-from isstools.elements.figure_update import update_figure
+import sys
+sys.path.append('/home/xf08id/Repos/')
 
-ui_path = pkg_resources.resource_filename('isstools', 'ui/ui_pilatus.ui')
-spectrometer_image1 = pkg_resources.resource_filename('isstools', 'Resources/spec_image1.png')
-spectrometer_image2 = pkg_resources.resource_filename('isstools', 'Resources/spec_image2.png')
+from .figure_update import update_figure
+
+ui_path = '/home/xf08id/Repos/xpilatus/pilatus_tools/ui/ui_pilatus.ui'
+
+
+    # pkg_resources.resource_filename('pilatus_tools', 'ui/ui_pilatus.ui')
+# spectrometer_image1 = pkg_resources.resource_filename('isstools', 'Resources/spec_image1.png')
+# spectrometer_image2 = pkg_resources.resource_filename('isstools', 'Resources/spec_image2.png')
 
 class UIPilatusMonitor(*uic.loadUiType(ui_path)):
     def __init__(self,
                 detector_dict=None,
-                plan_processor=None,
+                # plan_processor=None,
                 hhm=None,
                 parent=None,
                  *args, **kwargs
@@ -33,7 +39,7 @@ class UIPilatusMonitor(*uic.loadUiType(ui_path)):
         self.setupUi(self)
         self.parent = parent
         self.detector_dict = detector_dict
-        self.plan_processor = plan_processor
+        # self.plan_processor = plan_processor
         self.hhm = hhm
         self.cur_mouse_coords = None
 
@@ -384,7 +390,10 @@ class UIPilatusMonitor(*uic.loadUiType(ui_path)):
                           self.toolbar_pilatus_image,
                           self.canvas_pilatus_image)
 
-            _img = self.pilatus100k_device.image.array_data.value.reshape(195, 487)
+            _img = self.pilatus100k_device.image.array_data.get()
+            _img = _img.reshape(195, 487)
+
+            # _img = self.pilatus100k_device.image.array_data.value.reshape(195, 487)
             ## Dead pixels
             _img[158, 11] = 0
             _img[15, 352] = 0
@@ -430,7 +439,7 @@ class UIPilatusMonitor(*uic.loadUiType(ui_path)):
             self.figure_pilatus_image.ax.set_xticks([])
             self.figure_pilatus_image.ax.set_yticks([])
             self.canvas_pilatus_image.draw_idle()
-            self.figure_pilatus_image.tight_layout()
+            # self.figure_pilatus_image.tight_layout()
         except Exception as e:
             print('Could not update the image. Error: ',e)
 
@@ -577,6 +586,7 @@ class UIPilatusMonitor(*uic.loadUiType(ui_path)):
             getattr(self, "label_"+attribute_key).setText(f"{value:2.3f} {unit}")
             getattr(self, "doubleSpinBox_"+attribute_key).setValue(value)
 
+        getattr(self, "doubleSpinBox_" + attribute_key).setKeyboardTracking(False)
         getattr(self, "doubleSpinBox_"+attribute_key).valueChanged.connect(partial(update_item, attribute_key, self.subscription_dict[attribute_key]))
         self.subscription_dict[attribute_key].subscribe(update_item_value)
 
