@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>921</width>
-    <height>889</height>
+    <width>1186</width>
+    <height>909</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -23,9 +23,9 @@
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>30</y>
-     <width>321</width>
-     <height>781</height>
+     <y>10</y>
+     <width>591</width>
+     <height>881</height>
     </rect>
    </property>
    <layout class="QVBoxLayout" name="verticalLayout_pilatus_image"/>
@@ -33,42 +33,23 @@
   <widget class="QWidget" name="gridLayoutWidget">
    <property name="geometry">
     <rect>
-     <x>360</x>
+     <x>630</x>
      <y>20</y>
      <width>311</width>
-     <height>71</height>
+     <height>94</height>
     </rect>
    </property>
    <layout class="QGridLayout" name="gridLayout">
-    <item row="1" column="0">
-     <widget class="QLabel" name="label_3">
+    <item row="1" column="2">
+     <widget class="QLabel" name="label_num_of_images">
       <property name="maximumSize">
        <size>
-        <width>80</width>
-        <height>20</height>
+        <width>60</width>
+        <height>16777215</height>
        </size>
       </property>
       <property name="text">
-       <string># of images</string>
-      </property>
-     </widget>
-    </item>
-    <item row="0" column="1">
-     <widget class="QDoubleSpinBox" name="doubleSpinBox_exposure">
-      <property name="maximumSize">
-       <size>
-        <width>120</width>
-        <height>30</height>
-       </size>
-      </property>
-      <property name="decimals">
-       <number>3</number>
-      </property>
-      <property name="maximum">
-       <double>100.000000000000000</double>
-      </property>
-      <property name="value">
-       <double>1.000000000000000</double>
+       <string>1</string>
       </property>
      </widget>
     </item>
@@ -85,6 +66,19 @@
       </property>
      </widget>
     </item>
+    <item row="1" column="0">
+     <widget class="QLabel" name="label_3">
+      <property name="maximumSize">
+       <size>
+        <width>80</width>
+        <height>20</height>
+       </size>
+      </property>
+      <property name="text">
+       <string># of images</string>
+      </property>
+     </widget>
+    </item>
     <item row="0" column="2">
      <widget class="QLabel" name="label_exposure">
       <property name="maximumSize">
@@ -98,32 +92,23 @@
       </property>
      </widget>
     </item>
-    <item row="1" column="2">
-     <widget class="QLabel" name="label_num_of_images">
+    <item row="0" column="1">
+     <widget class="QLineEdit" name="lineEdit_exposure">
       <property name="maximumSize">
        <size>
-        <width>60</width>
-        <height>16777215</height>
+        <width>100</width>
+        <height>30</height>
        </size>
-      </property>
-      <property name="text">
-       <string>1</string>
       </property>
      </widget>
     </item>
     <item row="1" column="1">
-     <widget class="QDoubleSpinBox" name="doubleSpinBox_num_of_images">
+     <widget class="QLineEdit" name="lineEdit_num_of_images">
       <property name="maximumSize">
        <size>
-        <width>120</width>
+        <width>100</width>
         <height>30</height>
        </size>
-      </property>
-      <property name="decimals">
-       <number>0</number>
-      </property>
-      <property name="maximum">
-       <double>5000.000000000000000</double>
       </property>
      </widget>
     </item>
@@ -132,7 +117,7 @@
   <widget class="QGroupBox" name="groupBox">
    <property name="geometry">
     <rect>
-     <x>340</x>
+     <x>610</x>
      <y>110</y>
      <width>141</width>
      <height>131</height>
@@ -174,7 +159,7 @@
   <widget class="QPushButton" name="pushButton_start">
    <property name="geometry">
     <rect>
-     <x>540</x>
+     <x>810</x>
      <y>160</y>
      <width>91</width>
      <height>61</height>
@@ -187,7 +172,7 @@
   <widget class="QPushButton" name="pushButton_stop">
    <property name="geometry">
     <rect>
-     <x>640</x>
+     <x>910</x>
      <y>160</y>
      <width>91</width>
      <height>61</height>
@@ -200,7 +185,7 @@
   <widget class="QWidget" name="gridLayoutWidget_2">
    <property name="geometry">
     <rect>
-     <x>350</x>
+     <x>620</x>
      <y>430</y>
      <width>381</width>
      <height>66</height>
@@ -283,7 +268,7 @@
   <widget class="QWidget" name="gridLayoutWidget_3">
    <property name="geometry">
     <rect>
-     <x>340</x>
+     <x>610</x>
      <y>260</y>
      <width>571</width>
      <height>160</height>
@@ -806,7 +791,7 @@
   <widget class="QGroupBox" name="groupBox_2">
    <property name="geometry">
     <rect>
-     <x>340</x>
+     <x>610</x>
      <y>550</y>
      <width>491</width>
      <height>131</height>
@@ -820,8 +805,8 @@
      <rect>
       <x>10</x>
       <y>30</y>
-      <width>451</width>
-      <height>92</height>
+      <width>431</width>
+      <height>91</height>
      </rect>
     </property>
     <layout class="QGridLayout" name="gridLayout_4">
@@ -901,34 +886,41 @@
       </widget>
      </item>
      <item row="0" column="1">
-      <widget class="QDoubleSpinBox" name="doubleSpinBox_set_energy">
+      <widget class="QLineEdit" name="lineEdit_set_energy">
        <property name="enabled">
         <bool>false</bool>
        </property>
        <property name="maximumSize">
         <size>
-         <width>300</width>
-         <height>20</height>
+         <width>100</width>
+         <height>30</height>
         </size>
-       </property>
-       <property name="maximum">
-        <double>35000.000000000000000</double>
        </property>
       </widget>
      </item>
      <item row="1" column="1">
-      <widget class="QDoubleSpinBox" name="doubleSpinBox_cutoff_energy">
+      <widget class="QLineEdit" name="lineEdit_cutoff_energy">
        <property name="enabled">
         <bool>false</bool>
        </property>
        <property name="maximumSize">
         <size>
-         <width>300</width>
-         <height>20</height>
+         <width>100</width>
+         <height>30</height>
         </size>
        </property>
-       <property name="maximum">
-        <double>35000.000000000000000</double>
+      </widget>
+     </item>
+     <item row="2" column="2">
+      <widget class="QLabel" name="label_gain">
+       <property name="maximumSize">
+        <size>
+         <width>300</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="text">
+        <string>9000.00 eV</string>
        </property>
       </widget>
      </item>
@@ -938,7 +930,7 @@
   <widget class="QCheckBox" name="checkBox_auto_scale">
    <property name="geometry">
     <rect>
-     <x>350</x>
+     <x>620</x>
      <y>790</y>
      <width>171</width>
      <height>26</height>
@@ -951,7 +943,7 @@
   <widget class="QCheckBox" name="checkBox_detector_settings">
    <property name="geometry">
     <rect>
-     <x>350</x>
+     <x>620</x>
      <y>510</y>
      <width>131</width>
      <height>26</height>
@@ -964,7 +956,7 @@
   <widget class="QWidget" name="gridLayoutWidget_5">
    <property name="geometry">
     <rect>
-     <x>350</x>
+     <x>620</x>
      <y>690</y>
      <width>161</width>
      <height>80</height>
@@ -1036,7 +1028,7 @@
   <widget class="QWidget" name="verticalLayoutWidget_3">
    <property name="geometry">
     <rect>
-     <x>540</x>
+     <x>810</x>
      <y>690</y>
      <width>341</width>
      <height>82</height>
@@ -1075,7 +1067,7 @@
   <widget class="QCheckBox" name="checkBox_detector_flying">
    <property name="geometry">
     <rect>
-     <x>740</x>
+     <x>1010</x>
      <y>10</y>
      <width>171</width>
      <height>31</height>
@@ -1090,11 +1082,14 @@
    <property name="text">
     <string>Update image on Fly</string>
    </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
   </widget>
   <widget class="QLabel" name="label_detector_state">
    <property name="geometry">
     <rect>
-     <x>750</x>
+     <x>1020</x>
      <y>180</y>
      <width>91</width>
      <height>31</height>

@@ -161,7 +161,7 @@ class UIPilatusMonitor(*uic.loadUiType(ui_path)):
                                          "background-color : yellow"
                                          "}")
 
-        self.pilatus100k_device.cam.acquire.subscribe(self.update_image_widget)
+        # self.pilatus100k_device.cam.acquire.subscribe(self.update_image_widget)
 
     def update_counts_n_energy(self):
         try:
@@ -383,12 +383,17 @@ class UIPilatusMonitor(*uic.loadUiType(ui_path)):
 
 ##### Update, Add Pilatus Image
     def update_pilatus_image(self):
+
         try:
 
             self.last_image_update_time = ttime.time()
-            update_figure([self.figure_pilatus_image.ax],
-                          self.toolbar_pilatus_image,
-                          self.canvas_pilatus_image)
+            self.figure_pilatus_image.ax.clear()
+            self.toolbar_pilatus_image.update()
+
+
+            # update_figure([self.figure_pilatus_image.ax],
+            #               self.toolbar_pilatus_image,
+            #               self.canvas_pilatus_image)
 
             _img = self.pilatus100k_device.image.array_data.get()
             _img = _img.reshape(195, 487)
@@ -415,7 +420,7 @@ class UIPilatusMonitor(*uic.loadUiType(ui_path)):
 
 
 
-            self.figure_pilatus_image.ax.imshow(_img.T, aspect='auto', vmin=self._min, vmax=self._max)
+            self.figure_pilatus_image.ax.imshow(_img.T, interpolation='nearest', aspect='auto', vmin=self._min, vmax=self._max)
 
 
             # Add the patch to the Axes
@@ -435,11 +440,12 @@ class UIPilatusMonitor(*uic.loadUiType(ui_path)):
 
 
 
-            # self.figure_pilatus_image.ax.autoscale(True)
+            # # self.figure_pilatus_image.ax.autoscale(True)
             self.figure_pilatus_image.ax.set_xticks([])
             self.figure_pilatus_image.ax.set_yticks([])
+            self.figure_pilatus_image.tight_layout(pad=0)
             self.canvas_pilatus_image.draw_idle()
-            # self.figure_pilatus_image.tight_layout()
+
         except Exception as e:
             print('Could not update the image. Error: ',e)
 
@@ -450,9 +456,9 @@ class UIPilatusMonitor(*uic.loadUiType(ui_path)):
             except:
                 pass
 
-    def update_image_widget(self, value, old_value, **kwargs):
-        if value == 0 and old_value == 1:
-            self.update_pilatus_image()
+    # def update_image_widget(self, value, old_value, **kwargs):
+    #     if value == 0 and old_value == 1:
+    #         self.update_pilatus_image()
         #     print('acquiring')
         # print('done')
         # self.update_pilatus_image()
@@ -478,14 +484,21 @@ class UIPilatusMonitor(*uic.loadUiType(ui_path)):
         self.verticalLayout_pilatus_image.addWidget(self.toolbar_pilatus_image)
         self.verticalLayout_pilatus_image.addWidget(self.canvas_pilatus_image, stretch=1)
         self.figure_pilatus_image.ax = self.figure_pilatus_image.add_subplot(111)
+
         self.canvas_pilatus_image.draw_idle()
         self.figure_pilatus_image.tight_layout()
 
-        cursor = Cursor(self.figure_pilatus_image.ax, useblit=True, color='green', linewidth=0.75)
+        # self.figure_pilatus_image.ax.set_yticks = ([])
+        # self.figure_pilatus_image.ax.set_xticks = ([])
+        #
+        # self.canvas_pilatus_image.draw_idle()
 
-        self.cid_start = self.canvas_pilatus_image.mpl_connect('button_press_event', self.roi_mouse_click_start)
-        self.cid_move = self.canvas_pilatus_image.mpl_connect('motion_notify_event', self.roi_mouse_click_move)
-        self.cid_finish = self.canvas_pilatus_image.mpl_connect('button_release_event', self.roi_mouse_click_finish)
+
+        # cursor = Cursor(self.figure_pilatus_image.ax, useblit=True, color='green', linewidth=0.75)
+        #
+        # self.cid_start = self.canvas_pilatus_image.mpl_connect('button_press_event', self.roi_mouse_click_start)
+        # self.cid_move = self.canvas_pilatus_image.mpl_connect('motion_notify_event', self.roi_mouse_click_move)
+        # self.cid_finish = self.canvas_pilatus_image.mpl_connect('button_release_event', self.roi_mouse_click_finish)
 
     def line_select_callback(self, eclick, erelease):
         pass
@@ -540,18 +553,21 @@ class UIPilatusMonitor(*uic.loadUiType(ui_path)):
     def open_detector_setting(self):
 
         if self.checkBox_detector_settings.isChecked():
-            self.doubleSpinBox_set_energy.setEnabled(True)
-            self.doubleSpinBox_cutoff_energy.setEnabled(True)
+            self.lineEdit_set_energy.setEnabled(True)
+            self.lineEdit_cutoff_energy.setEnabled(True)
         else:
-            self.doubleSpinBox_set_energy.setEnabled(False)
-            self.doubleSpinBox_cutoff_energy.setEnabled(False)
+            self.lineEdit_set_energy.setEnabled(False)
+            self.lineEdit_cutoff_energy.setEnabled(False)
 
     def stop_acquire_image(self):
-        self.pilatus100k_device.cam.acquire.put(0)
+        status_obj = self.pilatus100k_device.cam.acquire.put(0)
+        # self.update_pilatus_image()
 
     def acquire_image(self):
+
         # self.plan_processor.add_plan_and_run_if_idle('take_pil100k_test_image_plan', {})
-        self.pilatus100k_device.cam.acquire.set(1).wait()
+        status_obj = self.pilatus100k_device.cam.acquire.set(1)
+        # self.update_pilatus_image()
 
 
 
@@ -573,7 +589,8 @@ class UIPilatusMonitor(*uic.loadUiType(ui_path)):
     def add_pilatus_attribute(self, attribute_key):
 
         def update_item(_attr_key, _attr_signal):
-            _current_value = getattr(self, "doubleSpinBox_"+_attr_key).value()
+            _current_value = getattr(self, "lineEdit_"+_attr_key).text()
+            _current_value = float(_current_value)
             _attr_signal.set(_current_value).wait()
 
         def update_item_value(value ,**kwargs):
@@ -583,11 +600,11 @@ class UIPilatusMonitor(*uic.loadUiType(ui_path)):
                 unit = " "
             else:
                 unit = "keV"
-            getattr(self, "label_"+attribute_key).setText(f"{value:2.3f} {unit}")
-            getattr(self, "doubleSpinBox_"+attribute_key).setValue(value)
+            getattr(self, "label_" + attribute_key).setText(f"{value:2.3f} {unit}")
+            getattr(self, "lineEdit_" + attribute_key).setText(f"{value:2.3f}")
 
-        getattr(self, "doubleSpinBox_" + attribute_key).setKeyboardTracking(False)
-        getattr(self, "doubleSpinBox_"+attribute_key).valueChanged.connect(partial(update_item, attribute_key, self.subscription_dict[attribute_key]))
+        # getattr(self, "lineEdit_" + attribute_key).setKeyboardTracking(False)
+        getattr(self, "lineEdit_" + attribute_key).returnPressed.connect(partial(update_item, attribute_key, self.subscription_dict[attribute_key]))
         self.subscription_dict[attribute_key].subscribe(update_item_value)
 
     def change_pilatus_gain(self):
@@ -595,4 +612,4 @@ class UIPilatusMonitor(*uic.loadUiType(ui_path)):
         self.pilatus100k_device.cam.gain_menu.set(_current_indx).wait()
 
     def update_gain_combobox(self, value, **kwargs):
-        self.comboBox_shapetime.setCurrentIndex(value)
+        self.label_gain.setText(f"{self.gain_menu[value]}")

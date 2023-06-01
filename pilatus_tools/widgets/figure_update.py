@@ -12,7 +12,7 @@ def update_figure(axes, toolbar, canvas):
         # cursor = Cursor(ax, useblit=True, color='green', linewidth=0.75)
     toolbar.update()
     canvas.draw_idle()
-    axes[-1].grid(alpha=0.4)
+    # axes[-1].grid(alpha=0.4)
 
 
 def update_figure_with_colorbar(axes, toolbar, canvas,figure):
