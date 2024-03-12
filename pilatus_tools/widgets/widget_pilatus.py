@@ -16,6 +16,7 @@ import matplotlib.patches as patches
 import time as ttime
 
 import pyqtgraph as pg
+pg.setConfigOption('leftButtonPan', False)
 
 import sys
 sys.path.append('/home/xf08id/Repos/')
@@ -73,8 +74,11 @@ class UIPilatusMonitor(*uic.loadUiType(ui_path)):
         for i in range(4):
             self.comboBox_shapetime.addItem(self.gain_menu[i])
 
-        self.pilatus100k_device.cam.image_mode.set(0).wait()
-        self.pilatus100k_device.cam.trigger_mode.set(0).wait()
+        # self.pilatus100k_device.cam.image_mode.set(0).wait()
+        # self.pilatus100k_device.cam.trigger_mode.set(0).wait()
+
+        self.pilatus100k_device.cam.image_mode.put(0)
+        self.pilatus100k_device.cam.trigger_mode.put(0)
 
 
 
@@ -226,14 +230,14 @@ class UIPilatusMonitor(*uic.loadUiType(ui_path)):
 
 
         _img = self.pilatus100k_device.image.array_data.get()
-        _img = _img.reshape(195,487)
+        _img = _img.reshape(195,487) #[:, ::-1]
 
         # _img = self.pilatus100k_device.image.array_data.value.reshape(195, 487)
         ## Dead pixels
-        _img[158, 11] = 0
-        _img[15, 352] = 0
-        _img[171, 364] = 0
-        _img[171, 365] = 0
+        # _img[158, 11] = 0
+        # _img[15, 352] = 0
+        # _img[171, 364] = 0
+        # _img[171, 365] = 0
 
         self.image.setImage(_img)
         self.image.setLevels([self._min, self._max])
@@ -259,14 +263,6 @@ class UIPilatusMonitor(*uic.loadUiType(ui_path)):
 
         getattr(self.pilatus100k_device, 'roi' + roi_indx).size.x.put(new_size[1])
         getattr(self.pilatus100k_device, 'roi' + roi_indx).size.y.put(new_size[0])
-
-
-
-
-
-
-
-
 
         # self.pilatus100k_device.cam.acquire.subscribe(self.update_image_widget)
 
