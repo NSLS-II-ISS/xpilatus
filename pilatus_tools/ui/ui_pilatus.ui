@@ -185,8 +185,8 @@
   <widget class="QWidget" name="gridLayoutWidget_2">
    <property name="geometry">
     <rect>
-     <x>620</x>
-     <y>430</y>
+     <x>610</x>
+     <y>470</y>
      <width>381</width>
      <height>66</height>
     </rect>
@@ -730,8 +730,8 @@
   <widget class="QGroupBox" name="groupBox_2">
    <property name="geometry">
     <rect>
-     <x>610</x>
-     <y>550</y>
+     <x>600</x>
+     <y>590</y>
      <width>531</width>
      <height>151</height>
     </rect>
@@ -869,8 +869,8 @@
   <widget class="QCheckBox" name="checkBox_auto_scale">
    <property name="geometry">
     <rect>
-     <x>620</x>
-     <y>820</y>
+     <x>610</x>
+     <y>860</y>
      <width>171</width>
      <height>26</height>
     </rect>
@@ -882,8 +882,8 @@
   <widget class="QCheckBox" name="checkBox_detector_settings">
    <property name="geometry">
     <rect>
-     <x>620</x>
-     <y>510</y>
+     <x>610</x>
+     <y>550</y>
      <width>131</width>
      <height>26</height>
     </rect>
@@ -895,8 +895,8 @@
   <widget class="QWidget" name="gridLayoutWidget_5">
    <property name="geometry">
     <rect>
-     <x>620</x>
-     <y>720</y>
+     <x>610</x>
+     <y>760</y>
      <width>161</width>
      <height>80</height>
     </rect>
@@ -967,8 +967,8 @@
   <widget class="QWidget" name="verticalLayoutWidget_3">
    <property name="geometry">
     <rect>
-     <x>800</x>
-     <y>720</y>
+     <x>790</x>
+     <y>760</y>
      <width>341</width>
      <height>82</height>
     </rect>
@@ -1045,6 +1045,19 @@
    </property>
    <property name="alignment">
     <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QCheckBox" name="checkBox_show_polygon_rois">
+   <property name="geometry">
+    <rect>
+     <x>630</x>
+     <y>430</y>
+     <width>211</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Show Polygon ROIs</string>
    </property>
   </widget>
  </widget>

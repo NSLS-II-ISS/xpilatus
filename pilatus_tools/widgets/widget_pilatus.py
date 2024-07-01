@@ -7,6 +7,7 @@ from PyQt5.QtGui import QPixmap, QCursor
 from isstools.dialogs.BasicDialogs import message_box
 from isstools.elements.widget_motors import UIWidgetMotors
 from functools import partial
+import json
 from time import sleep
 from matplotlib.backends.backend_qt5agg import (
     FigureCanvasQTAgg as FigureCanvas,
@@ -14,6 +15,7 @@ from matplotlib.backends.backend_qt5agg import (
 from matplotlib.figure import Figure
 import matplotlib.patches as patches
 import time as ttime
+import numpy as np
 
 import pyqtgraph as pg
 pg.setConfigOption('leftButtonPan', False)
@@ -45,6 +47,10 @@ class UIPilatusMonitor(*uic.loadUiType(ui_path)):
         # self.plan_processor = plan_processor
         self.hhm = hhm
         self.cur_mouse_coords = None
+
+        self.polygon_roi_path = f'/nsls2/data/iss/legacy/xf08id/settings/json/pilatus_polygon_roi.json'
+        with open(self.polygon_roi_path, 'r') as f:
+            self.pilatus_polygon_roi = json.loads(f.read())
 
         self.pilatus100k_dict = self.detector_dict['Pilatus 100k']
         self.pilatus100k_device = self.detector_dict['Pilatus 100k']['device']
@@ -111,13 +117,6 @@ class UIPilatusMonitor(*uic.loadUiType(ui_path)):
         self.label_x.setFont(QFont('Arial', 16))
         self.label_y.setFont(QFont('Arial', 16))
         # self.label_x.
-
-
-
-
-
-
-
 
         self._patches = {}
 
@@ -189,7 +188,7 @@ class UIPilatusMonitor(*uic.loadUiType(ui_path)):
             indx = str(i)
             self.roi_boxes[indx].sigRegionChangeFinished.connect(partial(self.read_new_pos_n_size, indx))
 
-
+        self.checkBox_show_polygon_rois.toggled.connect(self.add_polygon_rois)
 
     def create_plot_widget(self):
         self.window = pg.GraphicsLayoutWidget()
@@ -208,6 +207,7 @@ class UIPilatusMonitor(*uic.loadUiType(ui_path)):
         self.plot.addItem(self.image)
         self.set_n_add_roi_properties()
 
+
     def set_n_add_roi_properties(self):
         self.colors = {'1': 'red',
                        '2': 'cyan',
@@ -225,9 +225,41 @@ class UIPilatusMonitor(*uic.loadUiType(ui_path)):
             self.roi_boxes[indx].addScaleHandle([0.5, 0], [0.5, 1])
             self.roi_boxes[indx].addScaleHandle([0, 0.5], [1, 0.5])
 
+
+        self.colors_polygon = {'main': '#1f77b4',  # 'tab:blue',
+                               'aux2': '#ff7f0e',  # 'tab:orange',
+                               'aux3': '#2ca02c',  # 'tab:green',
+                               'aux4': '#d62728',  # 'tab:red',
+                               'aux5': '#9467bd', }  # 'tab:purple'
+        self.gui_polygon_roi = {}
+
+
+        for crystal, poly in self.pilatus_polygon_roi.items():
+            poly_T = [[j, i] for i, j in poly]
+            polygon_obj = pg.PolyLineROI(poly_T, closed=True,
+                                         pen=pg.mkPen(self.colors_polygon[crystal], width=5))
+            polygon_obj.sigRegionChangeFinished.connect(self.save_polygon_roi_coords)
+            self.gui_polygon_roi[crystal] = polygon_obj
+
+        self.get_polygon_roi_labels()
+
+    def get_polygon_roi_labels(self):
+        self.gui_polygon_label = {}
+        for crystal, polygon_obj in self.gui_polygon_roi.items():
+            font = QFont()
+            font.setBold(True)
+            font.setPointSize(16)
+            label = pg.TextItem(crystal, color=self.colors_polygon[crystal], fill='w', anchor=(0.5, 0.5))
+            label.setFont(font)
+            self.gui_polygon_label[crystal] = label
+        self.set_polygon_roi_label_positions()
+
+    def set_polygon_roi_label_positions(self, dy=25):
+        for crystal, polygon_obj in self.gui_polygon_roi.items():
+            _x, _y, _dx, _dy = polygon_obj.boundingRect().getRect()
+            self.gui_polygon_label[crystal].setPos(_x + _dx/2, _y + _dy + dy)
+
     def plot_this(self):
-
-
 
         _img = self.pilatus100k_device.image.array_data.get()
         _img = _img.reshape(195,487) #[:, ::-1]
@@ -265,6 +297,39 @@ class UIPilatusMonitor(*uic.loadUiType(ui_path)):
         getattr(self.pilatus100k_device, 'roi' + roi_indx).size.y.put(new_size[0])
 
         # self.pilatus100k_device.cam.acquire.subscribe(self.update_image_widget)
+
+    def add_polygon_rois(self, checked_state):
+        print(checked_state)
+        for crystal, obj in self.gui_polygon_roi.items():
+            if checked_state:
+                self.plot.addItem(obj)
+            else:
+                self.plot.removeItem(obj)
+
+        for crystal, obj in self.gui_polygon_label.items():
+            if checked_state:
+                self.plot.addItem(obj)
+            else:
+                self.plot.removeItem(obj)
+
+
+    @property
+    def gui_polygon_roi_coords(self):
+        output = {}
+        for crystal, obj in self.gui_polygon_roi.items():
+            points = []
+            for handle in obj.getHandles():
+                y, x = handle.pos()
+                points.append([x, y])
+            output[crystal] = points
+        return output
+
+
+    def save_polygon_roi_coords(self):
+        print('POLYGON ROI COORDINATES HAVE BEEN UPDATED. NOW STORING THEM ON DISC.')
+        self.set_polygon_roi_label_positions()
+        with open(self.polygon_roi_path, 'w') as f:
+            json.dump(self.gui_polygon_roi_coords, f)
 
     def update_counts_n_energy(self):
         try:
