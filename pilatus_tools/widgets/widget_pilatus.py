@@ -320,7 +320,7 @@ class UIPilatusMonitor(*uic.loadUiType(ui_path)):
             points = []
             for handle in obj.getHandles():
                 y, x = handle.pos()
-                points.append([x, y])
+                points.append([np.round(x, 1), np.round(y, 1)])
             output[crystal] = points
         return output
 
