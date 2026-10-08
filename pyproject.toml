@@ -7,7 +7,7 @@ name = "xpilatus"
 dynamic = ["version"]
 description = "Qt monitor for Pilatus detectors"
 readme = "README.rst"
-requires-python = ">=3.11"
+requires-python = ">=3.12"
 license = "BSD-3-Clause"
 authors = [{name = "Brookhaven National Lab", email = "atayal@bnl.gov"}]
 dependencies = [
@@ -47,7 +47,7 @@ qt_api = "pyqt5"
 
 [tool.ruff]
 line-length = 110
-target-version = "py311"
+target-version = "py312"
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B"]

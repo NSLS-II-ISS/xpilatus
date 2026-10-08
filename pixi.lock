@@ -518,7 +518,7 @@ packages:
   - twine>=6,<7 ; extra == 'dev'
   - sphinx>=8,<9 ; extra == 'docs'
   - sphinx-rtd-theme>=3,<4 ; extra == 'docs'
-  requires_python: '>=3.11'
+  requires_python: '>=3.12'
 - pypi: https://files.pythonhosted.org/packages/01/f9/575c8d760eae1fc99651b7cc5efd96ad5379ca4d6b53750b0fb4fe983f34/imagesize-2.0.1-py3-none-any.whl
   name: imagesize
   version: 2.0.1
