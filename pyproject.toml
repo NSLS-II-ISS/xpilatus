@@ -1,20 +1,74 @@
-[tool.black]
-line-length = 115
-include = '\.pyi?$'
-exclude = '''
-/(
-    \.git
-  | \.hg
-  | \.mypy_cache
-  | \.tox
-  | \.venv
-  | _build
-  | buck-out
-  | build
-  | dist
+[build-system]
+requires = ["setuptools>=77", "setuptools-scm>=8"]
+build-backend = "setuptools.build_meta"
 
-  # The following are specific to Black, you probably don't want those.
-  | blib2to3
-  | tests/data
-)/
-'''
+[project]
+name = "xpilatus"
+dynamic = ["version"]
+description = "Qt monitor for Pilatus detectors"
+readme = "README.rst"
+requires-python = ">=3.11"
+license = "BSD-3-Clause"
+authors = [{name = "Brookhaven National Lab", email = "atayal@bnl.gov"}]
+dependencies = [
+    "numpy>=1.26,<3",
+    "PyQt5>=5.15.10,<6",
+    "pyqtgraph>=0.13.7,<0.15",
+    "matplotlib>=3.8,<4",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8,<10", "pytest-qt>=4.4,<5", "ruff>=0.11,<1", "build>=1.2,<2", "twine>=6,<7"]
+docs = ["sphinx>=8,<9", "sphinx-rtd-theme>=3,<4"]
+
+[project.scripts]
+xpilatus = "xpilatus.__main__:main"
+
+[project.urls]
+Repository = "https://github.com/aakhiltayal/xpilatus"
+
+[tool.setuptools]
+include-package-data = false
+
+[tool.setuptools.packages.find]
+include = ["xpilatus*", "pilatus_tools*"]
+exclude = ["xpilatus.tests*"]
+namespaces = false
+
+[tool.setuptools.package-data]
+pilatus_tools = ["ui/*.ui"]
+
+[tool.setuptools_scm]
+fallback_version = "0.0.0"
+
+[tool.pytest.ini_options]
+testpaths = ["xpilatus/tests"]
+qt_api = "pyqt5"
+
+[tool.ruff]
+line-length = 110
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+
+[tool.pixi.workspace]
+channels = ["conda-forge"]
+platforms = ["linux-64"]
+
+[tool.pixi.dependencies]
+python = "3.12.*"
+pip = ">=25,<27"
+
+[tool.pixi.pypi-dependencies]
+xpilatus = { path = ".", editable = true, extras = ["dev", "docs"] }
+
+[tool.pixi.tasks]
+demo = "python -m xpilatus --demo"
+smoke = { cmd = "python -m xpilatus --demo --quit-after 1", env = { QT_QPA_PLATFORM = "offscreen" } }
+test = { cmd = "pytest -q", env = { QT_QPA_PLATFORM = "offscreen" } }
+lint = "ruff check ."
+format = "ruff format ."
+format-check = "ruff format --check ."
+build = "python -m build"
+docs = "sphinx-build -W -b html docs/source docs/build/html"

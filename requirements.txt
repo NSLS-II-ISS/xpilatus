@@ -1,1 +1,2 @@
-# List required packages in this file, one per line.
+# Runtime dependencies are declared in pyproject.toml.
+.
